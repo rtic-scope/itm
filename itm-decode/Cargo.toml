@@ -4,11 +4,10 @@ version = "0.4.0"
 keywords = ["parse", "ARM", "ITM"]
 documentation = "https://docs.rs/itm"
 authors = [
-        "The Cortex-M Team <cortex-m@teams.rust-embedded.org>",
         "Viktor Sonesten <v@tmplt.dev>",
 ]
 edition = "2018"
-readme = "README.md"
+readme = "../README.md"
 repository = "https://github.com/rtic-scope/itm"
 license = "MIT OR Apache-2.0"
 description = "A decoding tool for the ARM Cortex-M ITM/DWT packet protocol"
