@@ -26,5 +26,5 @@ optional = true
 [dependencies.cortex-m]
 version = "0.7"
 git = "https://github.com/rtic-scope/cortex-m"
-branch = "feat/impl-lts-opts"
+branch = "rtic-scope"
 features = ["serde"]

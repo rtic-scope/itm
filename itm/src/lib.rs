@@ -806,14 +806,6 @@ fn handle_hardware_source(disc_id: u8, payload: Vec<u8>) -> Result<TracePacket, 
             #[bitmatch]
             let "??ff_???e" = payload[1];
             let exception_number = ((e as u16) << 8) | payload[0] as u16;
-            let exception_number: u8 = if let Ok(nr) = exception_number.try_into() {
-                nr
-            } else {
-                return Err(MalformedPacket::InvalidExceptionTrace {
-                    exception: exception_number,
-                    function: f,
-                });
-            };
 
             Ok(TracePacket::ExceptionTrace {
                 exception: if let Some(exception) = VectActive::from(exception_number) {
