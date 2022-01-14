@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - `serde` derivation and build with `--features serde`.
+- `itm-decode`: only require `--freq` on `--timestamps`.
 
 ## [v0.4.0] - 2021-12-03
 
