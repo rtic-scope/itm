@@ -173,7 +173,7 @@ fn decode_exceptiontrace_packet() {
     assert_eq!(
         decoder.singles().next().unwrap().unwrap(),
         TracePacket::ExceptionTrace {
-            exception: cortex_m::peripheral::scb::VectActive::Interrupt { irqn: 32 },
+            exception: cortex_m::peripheral::scb::VectActive::Interrupt { irqn: 16 },
             action: ExceptionAction::Returned,
         }
     );
