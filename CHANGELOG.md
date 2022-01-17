@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.0] - 2021-12-15
+## [v0.7.0] - 2022-01-17
+
+This large bump in minor is required to break the API of both `itm` v0.3.1 and `itm-decode` v0.6.1, which this crate replaces.
 
 ### Changed
 
