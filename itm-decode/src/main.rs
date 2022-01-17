@@ -19,7 +19,7 @@ struct Opt {
     prescaler: Option<u8>,
 
     #[structopt(long = "--itm-freq", name = "freq")]
-    freq: u32,
+    freq: Option<u32>,
 
     #[structopt(long = "--expect-malformed")]
     expect_malformed: bool,
@@ -43,7 +43,7 @@ fn main() -> Result<()> {
         Opt {
             timestamps: true,
             prescaler,
-            freq,
+            freq: Some(freq),
             expect_malformed,
             ..
         } => {

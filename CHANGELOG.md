@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - `serde` derivation and build with `--features serde`.
 - Some outdated `README.md` documentation.
+- `itm-decode`: only require `--freq` on `--timestamps`.
 
 ## [v0.4.0] - 2021-12-03
 
