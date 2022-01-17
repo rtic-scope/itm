@@ -38,6 +38,9 @@ pub use iter::{
     TimestampsConfiguration,
 };
 
+#[cfg(feature = "serial")]
+pub mod serial;
+
 use std::convert::TryInto;
 use std::io::Read;
 

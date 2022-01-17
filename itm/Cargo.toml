@@ -22,8 +22,18 @@ version = "1"
 features = [ "derive" ]
 optional = true
 
+[dependencies.nix]
+version = "0.23"
+git = "https://github.com/rtic-scope/nix.git"
+branch = "feat/termios-linux-arbitrary"
+optional = true
+
 [dependencies.cortex-m]
 version = "0.7"
 git = "https://github.com/rtic-scope/cortex-m"
 branch = "rtic-scope"
 features = ["serde"]
+
+[features]
+default = []
+serial = ["nix"]
