@@ -1,5 +1,5 @@
 use anyhow::{bail, Context, Result};
-use itm::{Decoder, DecoderOptions, LocalTimestampOptions, TimestampsConfiguration};
+use itm::{serial, Decoder, DecoderOptions, LocalTimestampOptions, TimestampsConfiguration};
 use std::fs::File;
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -32,6 +32,10 @@ fn main() -> Result<()> {
     let opt = Opt::from_args();
 
     let file = File::open(&opt.file).context("failed to open file")?;
+    if let Some(freq) = opt.freq {
+        serial::configure(&file, freq)?;
+    }
+
     let decoder = Decoder::<File>::new(
         file,
         DecoderOptions {

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `itm`: `serial` convenience module for serial device configuration. Gated behind a `"serial"` feature.
+
+### Changed
+- `itm-decode`: configures the given file as a serial device on `--freq`.
+
 ## [v0.7.0] - 2022-01-17
 
 This large bump in minor is required to break the API of both `itm` v0.3.1 and `itm-decode` v0.6.1, which this crate replaces.
@@ -89,7 +97,8 @@ Related topics: https://github.com/rust-embedded/itm/pull/41, https://github.com
 - `itmdump` tool that parses instrumentation packets from the stimulus port 0
   and dumps the payload to `stdout`.
 
-[Unreleased]: https://github.com/rtic-scope/itm/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/rtic-scope/itm/compare/v0.7.0...HEAD
+[v0.7.0]: https://github.com/rtic-scope/itm/compare/v0.4.0...v0.7.0
 [v0.4.0]: https://github.com/rtic-scope/itm/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/rtic-scope/itm/compare/v0.2.1...v0.3.0
 [v0.2.1]: https://github.com/rtic-scope/itm/compare/v0.2.0...v0.2.1
