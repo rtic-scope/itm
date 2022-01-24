@@ -815,7 +815,7 @@ fn handle_hardware_source(disc_id: u8, payload: Vec<u8>) -> Result<TracePacket, 
                     exception
                 } else {
                     return Err(MalformedPacket::InvalidExceptionTrace {
-                        exception: exception_number.into(),
+                        exception: exception_number,
                         function: f,
                     });
                 },
@@ -825,7 +825,7 @@ fn handle_hardware_source(disc_id: u8, payload: Vec<u8>) -> Result<TracePacket, 
                     0b11 => ExceptionAction::Returned,
                     _ => {
                         return Err(MalformedPacket::InvalidExceptionTrace {
-                            exception: exception_number.into(),
+                            exception: exception_number,
                             function: f,
                         })
                     }
