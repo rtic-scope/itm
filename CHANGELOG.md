@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - `itm-decode`: configures the given file as a serial device on `--freq`.
+- `iter::Timestamps`: associate the timestamp data relation (now termed "quality") with a wrapping enum instead.
+  For example, a previous `Timestamp { offset: 1, data_relation: Sync }` is now represented as `Timestamp::Sync(1)`.
+  This change greatly encourages the downstream user to handle all timestamp qualities.
 
 ## [v0.7.0] - 2022-01-17
 

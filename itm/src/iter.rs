@@ -81,23 +81,39 @@ pub struct TimestampedTracePackets {
     pub consumed_packets: usize,
 }
 
-/// Absolute timestamp with associated [data relation](TimestampDataRelation).
+/// Absolute timestamp with quality description. Also see (Appendix D4.2.4).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Timestamp {
-    /// Offset in time from target reset that this timestamp denotes.
-    pub offset: Duration,
-
-    /// In what manner this timestamp relates to the associated data
-    /// packets.
-    pub data_relation: TimestampDataRelation,
-}
-
-impl PartialOrd for Timestamp {
-    /// Sorts [Timestamp]s based on [Timestamp::offset].
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.offset.cmp(&other.offset))
-    }
+pub enum Timestamp {
+    /// The timestamp is synchronous to the ITM/DWT data and event.
+    Sync(Duration),
+    /// The synchronous timestamp to the ITM/DWT data is unknown, but
+    /// must be between the previous and current timestamp provided
+    /// here.
+    UnknownDelay {
+        /// The previous timestamp.
+        prev: Duration,
+        /// The current timestamp.
+        curr: Duration,
+    },
+    /// The timestamp is synchronous to the ITM/DWT data packet
+    /// generation, but the packet itself was delayed relative to the
+    /// corresponding event due to other trace output packets.
+    AssocEventDelay(Duration),
+    /// The synchronous timestamp to the ITM/DWT data is unknown and
+    /// the generation of the associated packet itself was delayed
+    /// relative to the corresponding event due to other trace output
+    /// packets. This is a combination of
+    /// [`UnknownDelay`](Timestamp::UnknownDelay) and
+    /// [`AssocEventDelay`](Timestamp::AssocEventDelay); the packet
+    /// was generated, and the associated event occured some time
+    /// between the previous and current timestamp provided here.
+    UnknownAssocEventDelay {
+        /// The previous timestamp.
+        prev: Duration,
+        /// The current timestamp.
+        curr: Duration,
+    },
 }
 
 /// Iterator that yield [`TimestampedTracePackets`](TimestampedTracePackets).
@@ -109,6 +125,7 @@ where
     options: TimestampsConfiguration,
     current_offset: Duration,
     gts: Gts,
+    prev_lts: Duration,
 }
 
 #[cfg_attr(test, derive(Clone, Debug))]
@@ -181,6 +198,11 @@ where
                 lower: None,
                 upper: None,
             },
+            // NOTE: required because GTS resets current_offset. GTS
+            // -> LTS, would yield incorrect prev timestamp if this
+            // field, upon which only local timestamps are applied, is
+            // not used.
+            prev_lts: Duration::from_nanos(0),
         }
     }
 
@@ -195,6 +217,7 @@ where
         let mut consumed_packets: usize = 0;
 
         fn apply_lts(
+            prev_offset: &mut Duration,
             lts: u64,
             data_relation: TimestampDataRelation,
             current_offset: &mut Duration,
@@ -203,10 +226,24 @@ where
             let offset = calc_offset(lts, Some(options.lts_prescaler), options.clock_frequency);
             *current_offset = current_offset.add(offset);
 
-            Timestamp {
-                offset: *current_offset,
-                data_relation,
-            }
+            let lts = match data_relation {
+                TimestampDataRelation::Sync => Timestamp::Sync(*current_offset),
+                TimestampDataRelation::UnknownDelay => Timestamp::UnknownDelay {
+                    prev: *prev_offset,
+                    curr: *current_offset,
+                },
+                TimestampDataRelation::AssocEventDelay => {
+                    Timestamp::AssocEventDelay(*current_offset)
+                }
+                TimestampDataRelation::UnknownAssocEventDelay => {
+                    Timestamp::UnknownAssocEventDelay {
+                        prev: *prev_offset,
+                        curr: *current_offset,
+                    }
+                }
+            };
+            *prev_offset = *current_offset;
+            lts
         }
 
         fn apply_gts(gts: &Gts, current_offset: &mut Duration, options: &TimestampsConfiguration) {
@@ -229,6 +266,7 @@ where
                     TracePacket::LocalTimestamp1 { ts, data_relation } => {
                         return Ok(TimestampedTracePackets {
                             timestamp: apply_lts(
+                                &mut self.prev_lts,
                                 ts.into(),
                                 data_relation,
                                 &mut self.current_offset,
@@ -242,6 +280,7 @@ where
                     TracePacket::LocalTimestamp2 { ts } => {
                         return Ok(TimestampedTracePackets {
                             timestamp: apply_lts(
+                                &mut self.prev_lts,
                                 ts.into(),
                                 TimestampDataRelation::Sync,
                                 &mut self.current_offset,
@@ -487,46 +526,34 @@ mod timestamps {
                 ]
                 .into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(10026857009420563),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(10026857009420563)),
                 consumed_packets: 6,
             },
             TimestampedTracePackets {
                 packets: [TracePacket::PCSample { pc: None }].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(10026857009433126),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(10026857009433126)),
                 consumed_packets: 2,
             },
             TimestampedTracePackets {
                 packets: [TracePacket::Overflow].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(10026857009445689),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(10026857009445689)),
                 consumed_packets: 2,
             },
             TimestampedTracePackets {
                 packets: [].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(10026857009420563),
-                    data_relation: TimestampDataRelation::UnknownAssocEventDelay,
+                timestamp: Timestamp::UnknownAssocEventDelay {
+                    prev: Duration::from_nanos(10026857009445689),
+                    curr: Duration::from_nanos(10026857009420563),
                 },
                 consumed_packets: 3,
             },
             TimestampedTracePackets {
                 packets: [].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(10026857009420938),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(10026857009420938)),
                 consumed_packets: 1,
             },
         ]
@@ -587,28 +614,19 @@ mod timestamps {
             TimestampedTracePackets {
                 packets: [].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(375),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(375)),
                 consumed_packets: 1,
             },
             TimestampedTracePackets {
                 packets: [].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(4194304438),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(4194304438)),
                 consumed_packets: 3,
             },
             TimestampedTracePackets {
                 packets: [].into(),
                 malformed_packets: [].into(),
-                timestamp: Timestamp {
-                    offset: Duration::from_nanos(4194312313),
-                    data_relation: TimestampDataRelation::Sync,
-                },
+                timestamp: Timestamp::Sync(Duration::from_nanos(4194312313)),
                 consumed_packets: 2,
             },
         ]
