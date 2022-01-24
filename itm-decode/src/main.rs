@@ -63,7 +63,7 @@ fn main() -> Result<()> {
                         n
                     ),
                 },
-                expect_malformed: expect_malformed,
+                expect_malformed,
             }) {
                 match packets {
                     Err(e) => return Err(e).context("Decoder error"),
