@@ -1,6 +1,6 @@
 [package]
 name = "itm-decode"
-version = "0.7.0"
+version = "0.8.0"
 keywords = ["parse", "ARM", "ITM"]
 documentation = "https://docs.rs/itm"
 authors = [
@@ -13,6 +13,6 @@ license = "MIT OR Apache-2.0"
 description = "A decoding tool for the ARM Cortex-M ITM/DWT packet protocol"
 
 [dependencies]
-itm = { version = "0.7.0", path = "../itm", features = [ "serial" ] }
+itm = { version = "0.8.0", path = "../itm", features = [ "serial" ] }
 anyhow = "1.0"
 structopt = "0.3"

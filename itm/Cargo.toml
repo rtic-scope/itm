@@ -1,6 +1,6 @@
 [package]
 name = "itm"
-version = "0.7.0"
+version = "0.8.0"
 keywords = ["parse", "ARM", "ITM"]
 documentation = "https://docs.rs/itm"
 authors = [
