@@ -81,7 +81,18 @@ pub struct TimestampedTracePackets {
     pub consumed_packets: usize,
 }
 
-/// Absolute timestamp with quality description. Also see (Appendix D4.2.4).
+/// Timestamp relative to trace clock start with quality
+/// descriptions. In order of decreasing quality:
+/// - [`Sync`](Timestamp::Sync);
+/// - [`UnknownDelay`](Timestamp::UnknownDelay);
+/// - [`AssocEventDelay`](Timestamp::AssocEventDelay);
+/// - [`UnknownAssocEventDelay`](Timestamp::UnknownAssocEventDelay).
+///
+/// A decrease in timestamp quality indicates an insufficient
+/// exfiltration rate of trace packets. A decrease in timestamp
+/// quality may herald an overflow event.
+///
+/// See also (Appendix D4.2.4).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Timestamp {

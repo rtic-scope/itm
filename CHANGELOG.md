@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `iter::Timestamps`: associate the timestamp data relation (now termed "quality") with a wrapping enum instead.
   For example, a previous `Timestamp { offset: 1, data_relation: Sync }` is now represented as `Timestamp::Sync(1)`.
   This change greatly encourages the downstream user to handle all timestamp qualities.
+- Improved `iter::Timestamps` documentation regarding timestamp quality.
 
 ## [v0.7.0] - 2022-01-17
 
