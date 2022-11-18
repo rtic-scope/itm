@@ -435,7 +435,7 @@ where
                     return Err(DecoderErrorInt::Eof);
                 }
                 Ok(n) => {
-                    let mut bv = BitVec::<LocalBits, _>::from_vec(buffer[0..n].to_vec());
+                    let mut bv = BitVec::<_, LocalBits>::from_vec(buffer[0..n].to_vec());
                     bv.reverse();
                     bv.append(&mut self.buffer);
                     self.buffer.append(&mut bv);
