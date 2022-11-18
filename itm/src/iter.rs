@@ -5,7 +5,7 @@ use super::{
 use std::io::Read;
 use std::time::Duration;
 
-pub use cortex_m::peripheral::itm::LocalTimestampOptions;
+pub use crate::cortex_m::LocalTimestampOptions;
 
 /// Iterator that yield [`TracePacket`](TracePacket).
 pub struct Singles<R>

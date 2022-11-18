@@ -41,12 +41,14 @@ pub use iter::{
 #[cfg(feature = "serial")]
 pub mod serial;
 
+pub mod cortex_m;
+use cortex_m::VectActive;
+
 use std::convert::TryInto;
 use std::io::Read;
 
 use bitmatch::bitmatch;
 use bitvec::prelude::*;
-pub use cortex_m::peripheral::scb::VectActive;
 
 /// The set of valid packet types that can be decoded.
 #[derive(Debug, Clone, PartialEq)]
