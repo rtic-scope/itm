@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+
+## [v0.8.0] - 2022-11-20
+### Added
 - `itm`: `serial` convenience module for serial device configuration. Gated behind a `"serial"` feature.
 
 ### Changed
@@ -101,7 +106,8 @@ Related topics: https://github.com/rust-embedded/itm/pull/41, https://github.com
 - `itmdump` tool that parses instrumentation packets from the stimulus port 0
   and dumps the payload to `stdout`.
 
-[Unreleased]: https://github.com/rtic-scope/itm/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/rtic-scope/itm/compare/v0.8.0...HEAD
+[v0.8.0]: https://github.com/rtic-scope/itm/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/rtic-scope/itm/compare/v0.4.0...v0.7.0
 [v0.4.0]: https://github.com/rtic-scope/itm/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/rtic-scope/itm/compare/v0.2.1...v0.3.0
