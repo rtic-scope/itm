@@ -74,7 +74,7 @@ pub fn configure(device: &fs::File, baud_rate: u32) -> Result<(), SerialError> {
             ))
         })?;
 
-        settings.input_flags |= InputFlags::BRKINT | InputFlags::IGNPAR | InputFlags::IXON;
+        settings.input_flags |= InputFlags::BRKINT | InputFlags::IGNPAR;
         settings.input_flags &= !(InputFlags::ICRNL
             | InputFlags::IGNBRK
             | InputFlags::PARMRK
@@ -83,6 +83,7 @@ pub fn configure(device: &fs::File, baud_rate: u32) -> Result<(), SerialError> {
             | InputFlags::INLCR
             | InputFlags::IGNCR
             | InputFlags::ICRNL
+            | InputFlags::IXON
             | InputFlags::IXOFF
             | InputFlags::IXANY
             | InputFlags::IMAXBEL

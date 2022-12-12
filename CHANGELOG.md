@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
+- Serial configuration should no longer drop byte 0x11 (XON)
 
 ## [v0.8.0] - 2022-11-20
 ### Added
