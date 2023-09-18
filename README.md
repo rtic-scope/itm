@@ -13,7 +13,7 @@
 
 ```shell
 # Install `itm-decode` tool
-$ cargo install itm-decode
+$ cargo install --locked itm-decode
 
 # Check installation
 $ itm-decode --version
